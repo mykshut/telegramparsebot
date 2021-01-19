@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import time
 
 
 def bf_pre_process():
@@ -15,16 +16,22 @@ def identify_shop():
     for param in params:
         for scopes in param.split('.'):
             if scopes == 'zalando':
+                print(f'We found {scopes} in your URL so we think your shop is {scopes.upper()}')
+                time.sleep(1)
                 zalando()
 
             if scopes == 'allegro':
+                print(f'We found {scopes} in your {URL} so we think your shop is {scopes.upper()}')
+                time.sleep(1)
                 allegro()
 
             if scopes == 'mediamarkt':
+                print(f'We found {scopes} in your {URL} so we think your shop is {scopes.upper()}')
+                time.sleep(1)
                 mediamarkt()
 
 def zalando():
-    global soup, title, black_price, red_price
+    global soup, title, black_price, red_price, actuall_price
     title = soup.find_all('h1')
     black_price = soup.find_all('span', class_='uqkIZw ka2E9k uMhVZi FxZV-M z-oVg8 weHhRC ZiDB59')
     red_price = soup.find_all('span', class_="uqkIZw ka2E9k uMhVZi dgII7d z-oVg8 _88STHx cMfkVL")
@@ -47,7 +54,6 @@ def zalando():
         actuall_price = i.get_text()
         actuall_price = actuall_price.split()[0]
         actuall_price = float(actuall_price.replace(',','.'))
-
     promptcheck()
 
 def allegro():
@@ -79,17 +85,14 @@ def mediamarkt():
     black_pric = [i for i in str(black_price).split()][2]
     black_price = red_pric
     red_price = black_pric
-    print(black_price)
-    print(red_price)
     for i in title:
         title = i.get_text()
-    print(title)
     promptcheck()
 
 def promptcheck():
     global soup, title, black_price, red_price
     if black_price == []:
-        black_price = red_price
+        black_price = actuall_price
         print(f'Actuall Price: {black_price}')
         print(f'Name of product: {title}')
 
