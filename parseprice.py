@@ -12,6 +12,7 @@ def bf_pre_process():
     identify_shop()
 
 def identify_shop():
+    shops = ['zalando', 'allegro', 'mediamarkt']
     params = [i for i in URL.split('/')]
     for param in params:
         for scopes in param.split('.'):
