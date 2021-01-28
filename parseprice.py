@@ -3,6 +3,9 @@ from bs4 import BeautifulSoup
 import time
 import pandas as pd
 
+all_titles = []
+all_black_prices = []
+all_red_prices = []
 
 def bf_pre_process(URL): #1
     headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36'}
@@ -83,41 +86,43 @@ def mediamarkt(soup): #3.3
     title = soup.find_all('h1', class_="b-ofr_headDataTitle")
     red_price = soup.find('div', class_="m-priceBox_price")
     black_price = soup.find('div', class_='m-priceBox_old')
-    red_pric = [i for i in str(red_price).split()][3]
-    black_pric = [i for i in str(black_price).split()][2]
-    black_price = red_pric
-    red_price = black_pric
+    red_price = [i for i in str(red_price).split()][3]
+    black_price = [i for i in str(black_price).split()][2]
     for i in title:
         title = i.get_text()
     promptcheck(title, black_price, red_price)
 
 def promptcheck(title, black_price, red_price): #4
-    # global URL, all_titles, all_black_prices, all_red_prices, all_titles, all_black_prices, all_red_prices
-    # all_titles = []
-    # all_black_prices = []
-    # all_red_prices = []
+    # global all_titles, all_black_prices, all_red_prices
     if black_price == []:
         black_price = actuall_price
         print(f'Actuall Price: {black_price}')
         print(f'Name of product: {title}')
+        all_titles.append(title)
+        all_black_prices.append(black_price)
+        all_red_prices.append('it`s not on sale')
     if red_price == []:
         print(f'Actuall Price: {black_price}')
         print(f'Name of product: {title}')
+        all_titles.append(title)
+        all_black_prices.append(black_price)
+        all_red_prices.append('it`s not on sale')
     else:
         print('THIS PRODUCT IS FOR SALE!')
         print(f'Name of product: {title}')
         print(f'Actuall Price: {black_price}')
         print(f'Current price: {red_price}')
+        all_titles.append(title)
+        all_black_prices.append(black_price)
+        all_red_prices.append(red_price)
 
 def show_df(): #5
-    global all_titles, all_black_prices, all_red_prices
-    for i in range(0, len(all_titles)-1):
-        print(all_titles[i])
-        print(all_black_prices[i])
-        print(all_red_prices[i])
+    for black,red,title in zip(all_black_prices, all_red_prices, all_titles):
+        print(f'Name of product: {title:>8} Black price:{black:<20} Red price:{red:<20}')
 
 def whileloopforlinks(): #0
     T = True
+    print('Write >> STOP << to exit program!')
     while T == True:
         URL = input('Paste your URL here: ')
         if URL != 'STOP':
@@ -125,6 +130,8 @@ def whileloopforlinks(): #0
         if URL == 'STOP':
             time.sleep(1.5)
             print('Thank you!')
+            time.sleep(1.5)
+            show_df()
             T = False
 
 
