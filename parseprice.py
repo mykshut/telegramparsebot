@@ -61,6 +61,11 @@ def allegro(soup): #3.2
     title = soup.find_all('h1', class_="_1s2v1 _1djie _4lbi0")
     red_price = soup.find_all('div', class_='_1svub _lf05o _9a071_3SxcJ')
     black_price = soup.find_all('s')
+    or_black_price = soup.find_all('span', class_="_qnmdr")
+    if black_price == []:
+        black_price = red_price
+        red_price = []
+
     for i in title:
         title = i.get_text()
 
@@ -89,9 +94,15 @@ def mediamarkt(soup): #3.3
     promptcheck(title, black_price, red_price)
 
 def promptcheck(title, black_price, red_price): #4
-    global URL
+    # global URL, all_titles, all_black_prices, all_red_prices, all_titles, all_black_prices, all_red_prices
+    # all_titles = []
+    # all_black_prices = []
+    # all_red_prices = []
     if black_price == []:
         black_price = actuall_price
+        print(f'Actuall Price: {black_price}')
+        print(f'Name of product: {title}')
+    if red_price == []:
         print(f'Actuall Price: {black_price}')
         print(f'Name of product: {title}')
     else:
@@ -100,8 +111,12 @@ def promptcheck(title, black_price, red_price): #4
         print(f'Actuall Price: {black_price}')
         print(f'Current price: {red_price}')
 
-# def show_df():
-
+def show_df():
+    global all_titles, all_black_prices, all_red_prices
+    for i in range(0, len(all_titles)-1):
+        print(all_titles[i])
+        print(all_black_prices[i])
+        print(all_red_prices[i])
 #
 def whileloopforlinks():
     T = True
@@ -112,6 +127,7 @@ def whileloopforlinks():
         if URL == 'STOP':
             time.sleep(1.5)
             print('Thank you!')
+
             T = False
 
 
