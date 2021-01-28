@@ -5,8 +5,6 @@ import pandas as pd
 
 
 def bf_pre_process(URL): #1
-    # global URL
-    # URL = input('Paste your URL here: ')
     headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36'}
     page = requests.get(URL, headers=headers)
     soup = BeautifulSoup(page.content, 'html.parser')
@@ -111,14 +109,14 @@ def promptcheck(title, black_price, red_price): #4
         print(f'Actuall Price: {black_price}')
         print(f'Current price: {red_price}')
 
-def show_df():
+def show_df(): #5
     global all_titles, all_black_prices, all_red_prices
     for i in range(0, len(all_titles)-1):
         print(all_titles[i])
         print(all_black_prices[i])
         print(all_red_prices[i])
-#
-def whileloopforlinks():
+
+def whileloopforlinks(): #0
     T = True
     while T == True:
         URL = input('Paste your URL here: ')
@@ -127,14 +125,7 @@ def whileloopforlinks():
         if URL == 'STOP':
             time.sleep(1.5)
             print('Thank you!')
-
             T = False
 
-
-
-#
-# howmuch = int(input('How much products do you want to add for tracking?: '))
-# for i in range(howmuch):
-#     bf_pre_process()
 
 whileloopforlinks()
