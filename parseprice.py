@@ -176,11 +176,8 @@ def show_df(username): #5
             prod_data.close()
     print('product.csv file was succesfully updated with new data')
 
-def showcsvforuser(): #Func which show user`s URL with data
-    username = input('Write your name: ') #Username
-    if username in userids.userids.keys(): # Looking for username in dictionary
-        username = userids.userids[username]
-    with open('products.csv', 'r', newline='') as prod_data:
+def showcsvforuser(username): #Func which show user`s URL with data
+    with open('products.csv', 'r', newline='',encoding='utf-8') as prod_data:
         reader = csv.reader(prod_data)
         for line in reader:
             if line != []:
@@ -190,12 +187,9 @@ def showcsvforuser(): #Func which show user`s URL with data
                     print(line)
 
 
-def whileloopforlinks(): #Function with input data for parsing. Takes URL and Username
+def whileloopforlinks(username): #Function with input data for parsing. Takes URL and Username
     T = True
     i = 1
-    username = input('Write your name: ') #Username
-    if username in userids.userids.keys(): # Looking for username in dictionary
-        username = userids.userids[username] # if username exist it takes value
     print('Write >> STOP << to exit program!')
     while T == True: # Loop for adding URL
         URL = input(f'{i}: Paste your URL here: ')
@@ -212,10 +206,13 @@ def whileloopforlinks(): #Function with input data for parsing. Takes URL and Us
             T = False
 
 def next():
+    username = input('Write your name: ') #Username
     decision = input("If you want to add new data write NEW, if you want to see existing data write DATA: ")
+    if username in userids.userids.keys(): # Looking for username in dictionary
+        username = userids.userids[username]
     if decision == 'NEW':
-        whileloopforlinks()
+        whileloopforlinks(username)
     if decision == 'DATA':
-        showcsvforuser()
+        showcsvforuser(username)
 
 next()
