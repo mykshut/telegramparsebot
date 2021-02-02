@@ -4,6 +4,7 @@ import time
 import pandas as pd
 import csv
 import userids
+import random
 
 all_titles = []
 all_black_prices = []
@@ -21,28 +22,23 @@ def identify_shop(URL, soup): #2
     for param in params:
         for scopes in param.split('.'):
             if scopes == 'zalando':
-                print(f'We found {scopes} in your URL so we think your shop is {scopes.upper()}')
-                time.sleep(1)
+                findshop(scopes, URL)
                 zalando(soup)
 
             if scopes == 'allegro':
-                print(f'We found {scopes} in your {URL} so we think your shop is {scopes.upper()}')
-                time.sleep(1)
+                findshop(scopes, URL)
                 allegro(soup)
 
             if scopes == 'mediamarkt':
-                print(f'We found {scopes} in your {URL} so we think your shop is {scopes.upper()}')
-                time.sleep(1)
+                findshop(scopes, URL)
                 mediamarkt(soup)
 
             if scopes == 'coffeeproficiency':
-                print(f'We found {scopes} in your {URL} so we think your shop is {scopes.upper()}')
-                time.sleep(1)
+                findshop(scopes, URL)
                 coffeeproficiency(soup)
 
             if scopes == 'mediaexpert':
-                print(f'We found {scopes} in your {URL} so we think your shop is {scopes.upper()}')
-                time.sleep(1)
+                findshop(scopes, URL)
                 mediaexpert(soup)
 
 
@@ -129,7 +125,9 @@ def mediaexpert(soup):
 
     promptcheck(title, black_price, red_price)
 
-
+def findshop(scopes, URL):
+    print(f'We found {scopes} in your {URL} so we think your shop is {scopes.upper()}')
+    time.sleep(1)
 
 # def coffeeproficiency(soup):
 #     title = soup.find_all('h1', class_="product_title entry-title")
@@ -174,6 +172,7 @@ def show_df(username): #5
             prod_writer = csv.writer(prod_data, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             prod_writer.writerow([username, title, black, red])
             prod_data.close()
+    print(' ')
     print('product.csv file was succesfully updated with new data')
 
 def showcsvforuser(username): #Func which show user`s URL with data
@@ -201,18 +200,48 @@ def whileloopforlinks(username): #Function with input data for parsing. Takes UR
         if URL == 'STOP': # STOP loop for adding URL`S
             time.sleep(1.5)
             print('Thank you!')
-            time.sleep(1.5)
-            show_df(username) # Function which update CSV file
-            T = False
+            time.sleep(1.0)
+            yesno = input('Do you want to see data? [YES/NO]: ')
+            if yesno == 'YES':
+                time.sleep(1.5)
+                show_df(username) # Function which update CSV file
+                time.sleep(1.5)
+                showcsvforuser(username)
+                T = False
+            if yesno == 'NO':
+                time.sleep(1.5)
+                show_df(username) # Function which update CSV file
+                T = False
 
-def next():
-    username = input('Write your name: ') #Username
-    decision = input("If you want to add new data write NEW, if you want to see existing data write DATA: ")
-    if username in userids.userids.keys(): # Looking for username in dictionary
-        username = userids.userids[username]
-    if decision == 'NEW':
-        whileloopforlinks(username)
-    if decision == 'DATA':
-        showcsvforuser(username)
+def nextstep():
+    username = input('Write your name, if you need help write HELP: ') #Username
+    if username == 'HELP':
+        for nicks in userids.userids.keys():
+            print(nicks)
+        username = input('Write your name: ')
+        decision = input("If you want to add new data write NEW, if you want to see existing data write DATA: ")
+        if username in userids.userids.keys(): # Looking for username in dictionary
+            username = userids.userids[username]
+            if decision == 'NEW':
+                whileloopforlinks(username)
+            if decision == 'DATA':
+                showcsvforuser(username)
+    else:
+        if username in userids.userids.keys(): # Looking for username in dictionary
+            username = userids.userids[username]
+            decision = input("If you want to add new data write NEW, if you want to see existing data write DATA: ")
+            if decision == 'NEW':
+                whileloopforlinks(username)
+            if decision == 'DATA':
+                showcsvforuser(username)
+        else:
+            dyw = input("Do you want to add new user? [YES/NO]: ")
+            if dyw == 'YES':
+                newusername = input('Write new username there: ')
+                userids.userids[newusername] = random.randint(1, 9999999)
+                nextstep()
+            else:
+                print('Thank you for using our tracking solution :)')
+                exit()
 
-next()
+nextstep()
