@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import time
 import pandas as pd
 import csv
-
+import userids
 
 all_titles = []
 all_black_prices = []
@@ -76,6 +76,7 @@ def allegro(soup): #3.2
     red_price = soup.find_all('div', class_='_1svub _lf05o _9a071_3SxcJ')
     black_price = soup.find_all('s')
     or_black_price = soup.find_all('span', class_="_qnmdr")
+
     if black_price == []:
         black_price = red_price
         red_price = []
@@ -122,6 +123,7 @@ def mediaexpert(soup):
 
     for i in black_price:
         black_price = i
+
     if red_price == black_price:
         red_price = []
 
@@ -166,31 +168,54 @@ def promptcheck(title, black_price, red_price): #4
         all_red_prices.append(red_price)
 
 
-def show_df(): #5
+def show_df(username): #5
     for black,red,title in zip(all_black_prices, all_red_prices, all_titles):
         with open('products.csv', mode='a', encoding='utf-8') as prod_data:
             prod_writer = csv.writer(prod_data, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            prod_writer.writerow([title, black, red])
+            prod_writer.writerow([username, title, black, red])
             prod_data.close()
     print('product.csv file was succesfully updated with new data')
 
+def showcsvforuser(): #Func which show user`s URL with data
+    username = input('Write your name: ') #Username
+    if username in userids.userids.keys(): # Looking for username in dictionary
+        username = userids.userids[username]
+    with open('products.csv', 'r', newline='') as prod_data:
+        reader = csv.reader(prod_data)
+        for line in reader:
+            if line != []:
+                user, title, black, red = line
+                user = int(user)
+                if user == username:
+                    print(line)
 
-def whileloopforlinks(): #0
+
+def whileloopforlinks(): #Function with input data for parsing. Takes URL and Username
     T = True
     i = 1
+    username = input('Write your name: ') #Username
+    if username in userids.userids.keys(): # Looking for username in dictionary
+        username = userids.userids[username] # if username exist it takes value
     print('Write >> STOP << to exit program!')
-    while T == True:
+    while T == True: # Loop for adding URL
         URL = input(f'{i}: Paste your URL here: ')
 
-        if URL != 'STOP':
+        if URL != 'STOP': # Adding URL before STOP in prompt
             bf_pre_process(URL)
             i += 1
-        if URL == 'STOP':
+
+        if URL == 'STOP': # STOP loop for adding URL`S
             time.sleep(1.5)
             print('Thank you!')
             time.sleep(1.5)
-            show_df()
+            show_df(username) # Function which update CSV file
             T = False
 
+def next():
+    decision = input("If you want to add new data write NEW, if you want to see existing data write DATA: ")
+    if decision == 'NEW':
+        whileloopforlinks()
+    if decision == 'DATA':
+        showcsvforuser()
 
-whileloopforlinks()
+next()
