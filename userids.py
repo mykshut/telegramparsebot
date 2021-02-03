@@ -1,3 +1,3 @@
 userids = {'Example1' : 1232152,
             'Mykyta Shutenko' : 1513235,
-            'Example' : 1251252}
+            'Olga Khmil' : 1251252}

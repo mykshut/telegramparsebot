@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import time
 import pandas as pd
 import csv
-import userids
+import random
 
 all_titles = []
 all_black_prices = []
@@ -219,14 +219,21 @@ def whileloopforlinks(username): #Function with input data for parsing. Takes UR
 def nextstep():
     username = input('Write your name, if you need help write HELP: ') #Username
     if username == 'HELP':
-
-        for nicks in userids.userids.keys():
-            print(nicks)
+        with open('users.csv', 'r', newline='',encoding='utf-8') as prod_data:
+            reader = csv.reader(prod_data)
+            for line in reader:
+                if line != []:
+                    useR, Id = line
+                    print(useR, Id)
 
         username = input('Write your name: ')
         decision = input("If you want to add new data write NEW, if you want to see existing data write DATA: ")
-        if username in userids.userids.keys(): # Looking for username in dictionary
-            username = userids.userids[username]
+        with open('users.csv', 'r', newline='',encoding='utf-8') as prod_data:
+            reader = csv.reader(prod_data)
+            for line in reader:
+                useR, Id = line
+            if username == useR:
+                username = Id
 
             if decision == 'NEW':
                 whileloopforlinks(username)
@@ -235,22 +242,40 @@ def nextstep():
                 showcsvforuser(username)
     else:
 
-        if username in userids.userids.keys(): # Looking for username in dictionary
-            username = userids.userids[username]
+        with open('users.csv', 'r', newline='',encoding='utf-8') as prod_data:
+            reader = csv.reader(prod_data)
+            for line in reader:
+                useR, Id = line
+                if username in line:
+                    username = Id
             decision = input("If you want to add new data write NEW, if you want to see existing data write DATA: ")
             if decision == 'NEW':
                 whileloopforlinks(username)
             if decision == 'DATA':
                 showcsvforuser(username)
 
-        else:
-            dyw = input("Do you want to add new user? [YES/NO]: ")
-            if dyw == 'YES':
-                newusername = input('Write new username there: ')
-                userids.userids[newusername] = random.randint(1, 9999999)
-                nextstep()
             else:
-                print('Thank you for using our tracking solution :)')
-                exit()
+                print(f'{username} was not found in our Database :(')
+                time.sleep(1)
+                dyw = input("Do you want to add new user? [YES/NO]: ")
+                if dyw == 'YES':
+                    newuesr = input('Your username: ')
+                    with open('users.csv', 'r', newline='',encoding='utf-8') as prod_data:
+                        reader = csv.reader(prod_data)
+                        for line in reader:
+                            if line != []:
+                                useR, Id = line
+                                print(useR, Id)
+                                if username == useR:
+                                    username = Id
+                    with open('users.csv', mode='a', encoding='utf-8') as prod_data:
+                        prod_writer = csv.writer(prod_data, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                        prod_writer.writerow([newuesr, random.randint(1, 9999999)])
+                        prod_data.close()
+                        print(f'{newuesr} was succesfully added to user`s Database')
+                        whileloopforlinks(newuesr)
+                else:
+                    print('Thank you for using our tracking solution :)')
+                    exit()
 
 nextstep()
