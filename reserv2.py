@@ -221,42 +221,6 @@ def whileloopforlinks(username): #Function with input data for parsing. Takes UR
                 show_df(username) # Function which update CSV file
                 T = False
 
-def nextstep():
-    username = input('Write your name, if you need help write HELP: ') #Username
-    if username == 'HELP':
-
-        for nicks in userids.userids.keys():
-            print(nicks)
-
-        username = input('Write your name: ')
-        decision = input("If you want to add new data write NEW, if you want to see existing data write DATA: ")
-        if username in userids.userids.keys(): # Looking for username in dictionary
-            username = userids.userids[username]
-
-            if decision == 'NEW':
-                whileloopforlinks(username)
-
-            if decision == 'DATA':
-                showcsvforuser(username)
-    else:
-
-        if username in userids.userids.keys(): # Looking for username in dictionary
-            username = userids.userids[username]
-            decision = input("If you want to add new data write NEW, if you want to see existing data write DATA: ")
-            if decision == 'NEW':
-                whileloopforlinks(username)
-            if decision == 'DATA':
-                showcsvforuser(username)
-
-        else:
-            dyw = input("Do you want to add new user? [YES/NO]: ")
-            if dyw == 'YES':
-                newusername = input('Write new username there: ')
-                userids.userids[newusername] = random.randint(1, 9999999)
-                nextstep()
-            else:
-                print('Thank you for using our tracking solution :)')
-                exit()
 def nextstep1():
     username = input('Write your name, if you need help write HELP: ')
     with open('users.csv', 'r', newline='',encoding='utf-8') as user_data:
@@ -309,10 +273,10 @@ def ifuserexist(USERS,IDS,username):
                 if username == useR:
                     username = Id
                     print(username)
-                    if decision == 'NEW':
-                        whileloopforlinks(username)
-                    if decision == 'DATA':
-                        showcsvforuser(username)
+                if decision == 'NEW':
+                    whileloopforlinks(username)
+                if decision == 'DATA':
+                    showcsvforuser(username)
         else:
             print('Thank you for using our tracking solution :)')
             exit()
