@@ -5,12 +5,14 @@ import pandas as pd
 import csv
 import userids
 import random
+import smtplib
 
 all_titles = []
 all_black_prices = []
 all_red_prices = []
 USERS = []
 IDS = []
+EMAILS = []
 
 def bf_pre_process(URL): #1
     headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36'}
@@ -169,7 +171,6 @@ def promptcheck(title, black_price, red_price): #4
 
 
 def show_df(username): #5
-    print(f'{username} in this function')
     for black,red,title in zip(all_black_prices, all_red_prices, all_titles):
         with open('products.csv', mode='a', encoding='utf-8') as prod_data:
             prod_writer = csv.writer(prod_data, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -178,8 +179,7 @@ def show_df(username): #5
     print(' ')
     print('product.csv file was succesfully updated with new data')
 
-def showcsvforuser(username): #Func which show user`s URL with data
-    print(f'{username} in this function')
+def showcsvforuser(username,email): #Func which show user`s URL with data
     with open('products.csv', 'r', newline='',encoding='utf-8') as prod_data:
         reader = csv.reader(prod_data)
         for line in reader:
@@ -189,13 +189,24 @@ def showcsvforuser(username): #Func which show user`s URL with data
                 username = int(username)
                 if user == username:
                     print(line)
+    dyw = input('Do you want to got email with your data?: ')
+    if dyw == 'YES':
+        password = ''
+        static_email = 'print.python.academy@gmail.com'
+        message = f'Dear {username},\nThank for using our tool for tracking prices'
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(static_email, password)
+        server.sendmail(static_email, email, message)
+        print(f'Message were sent from {static_email} to {email}')
+    else:
+        print('Thank you')
     exit()
 
 
 def whileloopforlinks(username): #Function with input data for parsing. Takes URL and Username
     T = True
     i = 1
-    print(f'{username} in this function')
     print('Write >> STOP << to exit program!')
 
     while T == True: # Loop for adding URL
@@ -215,7 +226,7 @@ def whileloopforlinks(username): #Function with input data for parsing. Takes UR
                 time.sleep(1.5)
                 show_df(username) # Function which update CSV file
                 time.sleep(1.5)
-                showcsvforuser(username)
+                showcsvforuser(username,email)
                 T = False
 
             if yesno == 'NO':
@@ -229,66 +240,51 @@ def nextstep1():
         reader = csv.reader(user_data)
         for line in reader:
             if line != []:
-                useR, Id = line
+                useR, Id, email = line
                 USERS.append(useR)
                 IDS.append(Id)
-    ifuserexist(USERS,IDS,username)
+                EMAILS.append(email)
+    ifuserexist(USERS,IDS,EMAILS,username)
 
-def ifuserexist(USERS,IDS,username):
-    with open('users.csv', mode='r', encoding='utf-8') as user_data:
-        reader = csv.reader(prod_data)
-        for line in reader:
-            print(line)
+def ifuserexist(USERS,IDS,EMAILS,username):
     if username == 'HELP':
-        print('help func')
-        print(' ')
-        print(USERS)
+        print('Thank for using HELP function :) Below you can find all users existing in our DataBase\n')
+        time.sleep(1.0)
+        print(f'{USERS}\nPlease select one of this user below\nIf you don`t find your username type NEWUSER in chat\n')
+        time.sleep(1.0)
         username = input('Write your name, if you need help write HELP: ')
         if username in USERS:
-             print('next step func after help')
-             username = Id
-             print(username)
+             userid = USERS.index(username)
+             username = IDS[userid]
+             email = EMAILS[userid]
              decision = input("If you want to add new data write NEW, if you want to see existing data write DATA: ")
              if decision == 'NEW':
                  whileloopforlinks(username)
              if decision == 'DATA':
-                 showcsvforuser(username)
+                 showcsvforuser(username,email)
     if username in USERS:
-        print('exist func')
-        print(' ')
-        print('Your username in users')
-        username = Id
+        userid = USERS.index(username)
+        print('Your username in users\n')
+        username = IDS[userid]
+        email = EMAILS[userid]
         print(username)
         decision = input("If you want to add new data write NEW, if you want to see existing data write DATA: ")
         if decision == 'NEW':
             whileloopforlinks(username)
         if decision == 'DATA':
-            showcsvforuser(username)
+            showcsvforuser(username,email)
 
-    else:
-        print('not exist func')
+    if username not in USERS and username == 'NEWUSER':
+        username = input('Write new username there: ')
+        email = input('Write your email here: ')
+        with open('users.csv', mode='a', encoding='utf-8') as user_data:
+            user_writer = csv.writer(user_data, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            specialID = random.randint(1, 9999999)
+            user_writer.writerow([username, specialID, email])
+            user_data.close()
         print(' ')
-        print('Your username not in users')
-        dyw = input("Do you want to add new user? [YES/NO]: ")
-        if dyw == 'YES':
-            newusername = input('Write new username there: ')
-            with open('users.csv', mode='a', encoding='utf-8') as user_data:
-                user_writer = csv.writer(user_data, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-                user_writer.writerow([newusername, random.randint(1, 9999999)])
-                user_data.close()
-                print(' ')
-                print(f'users.csv file was succesfully updated with new data with {newusername} nick')
-                decision = input("If you want to add new data write NEW, if you want to see existing data write DATA: ")
-                if username == useR:
-                    username = Id
-                    print(username)
-                if decision == 'NEW':
-                    whileloopforlinks(username)
-                if decision == 'DATA':
-                    showcsvforuser(username)
-        else:
-            print('Thank you for using our tracking solution :)')
-            exit()
+        print(f'users.csv file was succesfully updated with new data with |{username}|\nNick with special ID |{specialID}|')
+
 
 
 nextstep1()

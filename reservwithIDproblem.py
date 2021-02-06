@@ -9,8 +9,6 @@ import random
 all_titles = []
 all_black_prices = []
 all_red_prices = []
-USERS = []
-IDS = []
 
 def bf_pre_process(URL): #1
     headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36'}
@@ -223,27 +221,18 @@ def whileloopforlinks(username): #Function with input data for parsing. Takes UR
                 show_df(username) # Function which update CSV file
                 T = False
 
-def nextstep1():
+def ifuserexist():
     username = input('Write your name, if you need help write HELP: ')
     with open('users.csv', 'r', newline='',encoding='utf-8') as user_data:
         reader = csv.reader(user_data)
         for line in reader:
             if line != []:
-                useR, Id = line
-                USERS.append(useR)
-                IDS.append(Id)
-    ifuserexist(USERS,IDS,username)
-
-def ifuserexist(USERS,IDS,username):
-    for useR, Id in zip(USERS, IDS):
-        useR = useR
-        Id = Id
+                USER, ID = line
+                ID = int(ID)
     if username == 'HELP':
         print('help func')
-        print(' ')
-        print(USERS)
         username = input('Write your name, if you need help write HELP: ')
-        if username in USERS:
+        if username == USER:
              print('next step func after help')
              username = Id
              print(username)
@@ -252,7 +241,7 @@ def ifuserexist(USERS,IDS,username):
                  whileloopforlinks(username)
              if decision == 'DATA':
                  showcsvforuser(username)
-    if username in USERS:
+    if username == USER:
         print('exist func')
         print(' ')
         print('Your username in users')
@@ -289,5 +278,4 @@ def ifuserexist(USERS,IDS,username):
             print('Thank you for using our tracking solution :)')
             exit()
 
-
-nextstep1()
+ifuserexist()
