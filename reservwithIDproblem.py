@@ -235,10 +235,9 @@ def nextstep1():
     ifuserexist(USERS,IDS,username)
 
 def ifuserexist(USERS,IDS,username):
-    with open('users.csv', mode='r', encoding='utf-8') as user_data:
-        reader = csv.reader(prod_data)
-        for line in reader:
-            print(line)
+    for useR, Id in zip(USERS, IDS):
+        useR = useR
+        Id = Id
     if username == 'HELP':
         print('help func')
         print(' ')
