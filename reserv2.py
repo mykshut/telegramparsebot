@@ -181,6 +181,7 @@ def show_df(username): #5
 
 def showcsvforuser(namefor,username,email): #Func which show user`s URL with data
     dataformail = []
+    datamessage = ''
     with open('products.csv', 'r', newline='',encoding='utf-8') as prod_data:
         reader = csv.reader(prod_data)
         for line in reader:
@@ -193,6 +194,7 @@ def showcsvforuser(namefor,username,email): #Func which show user`s URL with dat
                     dataformail.append(line)
     dyw = input('Do you want to got email with your data?: ')
     if dyw == 'YES':
+        time.sleep(0.35)
         password = input('Password: ')
         static_email = 'print.python.academy@gmail.com'
         message = f'Dear {namefor},\nBelow you can find data below to you\n{dataformail}'
@@ -200,8 +202,10 @@ def showcsvforuser(namefor,username,email): #Func which show user`s URL with dat
         server.starttls()
         server.login(static_email, password)
         server.sendmail(static_email, email, message)
+        time.sleep(0.35)
         print(f'Message were sent from {static_email} to {email}')
     else:
+        time.sleep(0.75)
         print('Thank you')
     exit()
 
@@ -228,7 +232,7 @@ def whileloopforlinks(username,email,namefor): #Function with input data for par
                 time.sleep(1.5)
                 show_df(username) # Function which update CSV file
                 time.sleep(1.5)
-                showcsvforusershowcsvforuser(namefor,username,email)
+                showcsvforuser(namefor,username,email)
                 T = False
 
             if yesno == 'NO':
@@ -278,16 +282,23 @@ def ifuserexist(USERS,IDS,EMAILS,username):
         if decision == 'DATA':
             showcsvforuser(namefor,username,email)
 
-    if username not in USERS and username == 'NEWUSER':
+    if username not in USERS or username == 'NEWUSER':
         username = input('Write new username there: ')
+        namefor = username
+        specialID = random.randint(1, 999999999)
         email = input('Write your email here: ')
         with open('users.csv', mode='a', encoding='utf-8') as user_data:
             user_writer = csv.writer(user_data, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            specialID = random.randint(1, 9999999)
             user_writer.writerow([username, specialID, email])
             user_data.close()
         print(' ')
         print(f'users.csv file was succesfully updated with new data with |{username}|\nNick with special ID |{specialID}|')
+        decision = input("If you want to add new data write NEW, if you want to see existing data write DATA: ")
+        username = specialID
+        if decision == 'NEW':
+            whileloopforlinks(username,email,namefor)
+        if decision == 'DATA':
+            showcsvforuser(namefor,username,email)
 
 
 
