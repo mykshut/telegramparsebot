@@ -69,7 +69,7 @@ def zalando(soup): #3.1
         actuall_price = actuall_price.split()[0]
         actuall_price = float(actuall_price.replace(',','.'))
 
-    promptcheck(title, black_price, red_price)
+    polish_letter_change(title, black_price, red_price)
 
 def allegro(soup): #3.2
     title = soup.find_all('h1', class_="_1s2v1 _1djie _4lbi0")
@@ -94,7 +94,7 @@ def allegro(soup): #3.2
         red_price = red_price.split()[0]
         red_price = float(red_price.replace(',','.'))
 
-    promptcheck(title, black_price, red_price)
+    polish_letter_change(title, black_price, red_price)
 
 def mediamarkt(soup): #3.3
     title = soup.find_all('h1', class_="b-ofr_headDataTitle")
@@ -106,7 +106,7 @@ def mediamarkt(soup): #3.3
     for i in title:
         title = i.get_text()
 
-    promptcheck(title, black_price, red_price)
+    polish_letter_change(title, black_price, red_price)
 
 def mediaexpert(soup):
     title = soup.find_all('h1', class_='a-typo is-primary')
@@ -127,7 +127,7 @@ def mediaexpert(soup):
     if red_price == black_price:
         red_price = []
 
-    promptcheck(title, black_price, red_price)
+    polish_letter_change(title, black_price, red_price)
 
 def findshop(scopes, URL):
     print(f'We found {scopes} in your {URL} so we think your shop is {scopes.upper()}')
@@ -144,6 +144,19 @@ def findshop(scopes, URL):
 #         black_price = float(black_price.replace(',','.'))
 #     print(black_price)
 
+def polish_letter_change(title, black_price, red_price):
+    title = title.lower()
+    title = title.replace('ą', 'a')
+    title = title.replace('ć', 'c')
+    title = title.replace('ę', 'e')
+    title = title.replace('ł', 'l')
+    title = title.replace('ń', 'n')
+    title = title.replace('ó', 'o')
+    title = title.replace('ś', 's')
+    title = title.replace('ź', 'z')
+    title = title.replace('ż', 'z')
+
+    promptcheck(title, black_price, red_price)
 
 def promptcheck(title, black_price, red_price): #4
     # global all_titles, all_black_prices, all_red_prices
