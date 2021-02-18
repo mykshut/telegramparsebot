@@ -145,16 +145,23 @@ def findshop(scopes, URL):
 #     print(black_price)
 
 def polish_letter_change(title, black_price, red_price):
-    title = title.lower()
-    title = title.replace('ą', 'a')
-    title = title.replace('ć', 'c')
-    title = title.replace('ę', 'e')
-    title = title.replace('ł', 'l')
-    title = title.replace('ń', 'n')
-    title = title.replace('ó', 'o')
-    title = title.replace('ś', 's')
-    title = title.replace('ź', 'z')
-    title = title.replace('ż', 'z')
+    polishletter = {'ą' : 'a',
+                    'ć' : 'c',
+                    'ę' : 'e',
+                    'ł' : 'l',
+                    'ń' : 'n',
+                    'ó' : 'o',
+                    'ś' : 's',
+                    'ź' : 'z',
+                    'ż' : 'z'}
+    keys_of = polishletter.keys()
+    for i in title:
+        for symbs in keys_of:
+            if i == symbs:
+                title = title.replace(i, polishletter[i])
+            elif i == symbs.upper():
+                new_i = i.lower()
+                title = word.replace(i, polishletter[new_i].upper())
 
     promptcheck(title, black_price, red_price)
 
